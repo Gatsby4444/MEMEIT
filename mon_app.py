@@ -35,23 +35,5 @@ def texte():
 def gallery():
   return render_template("gallery.html")
 
-
-def take_screenshot(url):
-  options = webdriver.ChromeOptions()
-  options.add_argument('--headless')  # Exécuter Chrome en arrière-plan
-  options.add_argument('--no-sandbox')  # Pour éviter les erreurs de sandbox
-  driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-  driver.get(url)
-  # Attendre que la page se charge complètement (vous pouvez ajuster le délai si nécessaire)
-  time.sleep(2)
-  # Prendre un screenshot de la page entière
-  screenshot_path = 'screenshot.jpg'
-  driver.save_screenshot(screenshot_path)
-  driver.quit()
-  return screenshot_path
-
-
-
-
 if __name__ == '__main__':
   app.run(debug=True)
