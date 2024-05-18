@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEME_IT</title>
@@ -8,74 +8,51 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  </head>
-   <body>
-     <h1> MEMEIT</h1>
-     <div class="container">
-       <img src="{{ image_url }}" alt="image">
-       <div id="draggable" class="draggable">
-        <div id="content">{{texte_saisi}}</div>
-        <button class="btn">Sauvegarder</button>
-       </div>
-     </div>
-    
-     <script>
-         function makeDraggable(element) {
-             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-             element.onmousedown = dragMouseDown;
+</head>
+<body>
+    <h1> MEMEIT</h1>
+    <div class="container">
+        <canvas id="meme-canvas"></canvas>
+    </div>
+    <button class="btn" id="save-button">Enregistrer</button>
 
-             function dragMouseDown(e) {
-                 e = e || window.event;
-                 e.preventDefault();
-                 pos3 = e.clientX;
-                 pos4 = e.clientY;
-                 document.onmouseup = closeDragElement;
-                 document.onmousemove = elementDrag;
-             }
-
-             function elementDrag(e) {
-                 e = e || window.event;
-                 e.preventDefault();
-                 pos1 = pos3 - e.clientX;
-                 pos2 = pos4 - e.clientY;
-                 pos3 = e.clientX;
-                 pos4 = e.clientY;
-                 element.style.top = (element.offsetTop - pos2) + "px";
-                 element.style.left = (element.offsetLeft - pos1) + "px";
-             }
-
-             function closeDragElement() {
-                 document.onmouseup = null;
-                 document.onmousemove = null;
-             }
-         }
-
-         // Appel de la fonction pour rendre draggable l'élément avec l'ID "draggable"
-         makeDraggable(document.getElementById('draggable'));
-     </script>
-     
-     <!-- JavaScript -->
+    <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
         $(document).ready(function() {
-            $(".btn").on("click", function() {
-                html2canvas(document.querySelector(".container")).then(function(canvas) {
-                    var imageData = canvas.toDataURL("image/png");
+            var imageUrl = "{{ image_url }}";
+            var texteSaisi = "{{ texte_saisi }}";
 
-                    var link = document.createElement('a');
-                    link.href = imageData;
-                    link.download = 'screenshot.png';
+            var canvas = document.getElementById('meme-canvas');
+            var ctx = canvas.getContext('2d');
 
-                    document.body.appendChild(link);
-                    link.click();
+            var img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.src = imageUrl;
 
-                    document.body.removeChild(link);
-                });
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                // Draw image
+                ctx.drawImage(img, 0, 0);
+
+                // Add text
+                ctx.font = "30px Roboto";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText(texteSaisi, canvas.width / 2, canvas.height - 50);
+            };
+
+            $("#save-button").on("click", function() {
+                var link = document.createElement('a');
+                link.href = canvas.toDataURL("image/png");
+                link.download = 'meme.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             });
         });
     </script>
-
-   </body>
-  
+</body>
 </html>
