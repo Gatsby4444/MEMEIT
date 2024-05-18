@@ -28,10 +28,5 @@ def texte():
     image_url = session.get('image_url', None)
   return render_template('index3.html', texte_saisi=texte_saisi, image_url=image_url)
 
-
-@app.route('/gallery', methods=['GET', 'POST'])
-def gallery():
-  return render_template("gallery.html")
-
 if __name__ == '__main__':
   app.run(debug=True)
