@@ -26,9 +26,7 @@ def texte():
   if request.method == 'POST':
     texte_saisi = request.form['texte_saisi']
     image_url = session.get('image_url', None)
-  return render_template('index3.html',
-                         texte_saisi=texte_saisi,
-                         image_url=image_url)
+  return render_template('index3.html', texte_saisi=texte_saisi, image_url=image_url)
 
 
 @app.route('/gallery', methods=['GET', 'POST'])
