@@ -8,20 +8,25 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 <body>
     <h1>MEMEIT</h1>
     <div class="container">
         <canvas id="meme-canvas"></canvas>
     </div>
-    <button class="btn" id="save-button">Save</button>
+    <div class="text-draggable" id="text1">{{ texte_saisi1 }}</div>
+    <div class="text-draggable" id="text2">{{ texte_saisi2 }}</div>
+    <button class="btn" id="save-button">Enregistrer</button>
 
     <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
         $(document).ready(function() {
             var imageUrl = "{{ image_url }}";
-            var texteSaisi = "{{ texte_saisi }}";
+            var texteSaisi1 = "{{ texte_saisi1 }}";
+            var texteSaisi2 = "{{ texte_saisi2 }}";
 
             var canvas = document.getElementById('meme-canvas');
             var ctx = canvas.getContext('2d');
@@ -31,20 +36,52 @@
             img.src = imageUrl;
 
             img.onload = function() {
-                canvas.width = img.width;
-                canvas.height = img.height;
+                var container = document.querySelector('.container');
+                var containerWidth = container.clientWidth;
+                var containerHeight = container.clientHeight;
 
-                // Draw image
-                ctx.drawImage(img, 0, 0);
+                canvas.width = containerWidth;
+                canvas.height = containerHeight;
 
-                // Add text
+                var hRatio = canvas.width / img.width;
+                var vRatio = canvas.height / img.height;
+                var ratio = Math.max(hRatio, vRatio);
+                var centerShift_x = (canvas.width - img.width * ratio) / 2;
+                var centerShift_y = (canvas.height - img.height * ratio) / 2;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, img.width, img.height,
+                    centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
+            };
+
+            function makeTextDraggable(textId) {
+                $("#" + textId).draggable({
+                    stop: function(event, ui) {
+                        // Position of the text on the canvas
+                        var offset = $(this).offset();
+                        var containerOffset = $(".container").offset();
+                        var x = offset.left - containerOffset.left;
+                        var y = offset.top - containerOffset.top;
+                        $(this).data("x", x);
+                        $(this).data("y", y);
+                    }
+                });
+            }
+
+            makeTextDraggable("text1");
+            makeTextDraggable("text2");
+
+            $("#save-button").on("click", function() {
                 ctx.font = "30px Roboto";
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
-                ctx.fillText(texteSaisi, canvas.width / 2, canvas.height - 50);
-            };
 
-            $("#save-button").on("click", function() {
+                // Get the positions of the texts
+                var text1 = $("#text1");
+                var text2 = $("#text2");
+                ctx.fillText(texteSaisi1, text1.data("x") + text1.width() / 2, text1.data("y") + text1.height() / 2);
+                ctx.fillText(texteSaisi2, text2.data("x") + text2.width() / 2, text2.data("y") + text2.height() / 2);
+
                 var link = document.createElement('a');
                 link.href = canvas.toDataURL("image/png");
                 link.download = 'meme.png';
@@ -56,3 +93,4 @@
     </script>
 </body>
 </html>
+

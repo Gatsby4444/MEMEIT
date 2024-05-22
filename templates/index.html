@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEMEIT</title>
     <link href="/static/style.css" rel="stylesheet">
-</head>
-<body>
-    <h1>MEMEIT</h1>
-    <div class="container">
-        <form action="{{ url_for('image') }}" method="POST">
-            <label for="image_url">Image's URL :</label><br>
-            <input type="text" id="image_url" name="image_url"><br><br>
-            <input type="submit" value="Submit">
-        </form>
-        {% if error %}
-            <p style="color: red;">{{ error }}</p>
-        {% endif %}
-    </div>
-</body>
+  </head>
+   <body>
+     <h1> MEMEIT</h1>
+     <div class="container">
+       <form action="{{ url_for('image') }}" method="POST">
+         <label for="image_url">Image's URL :</label><br>
+         <input type="text" id="image_url" name="image_url"><br><br>
+         <input type="submit" value="Submit">
+       </form>
+     </div>
+   </body>
 </html>
-
